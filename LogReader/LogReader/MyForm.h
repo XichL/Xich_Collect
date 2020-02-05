@@ -29,6 +29,7 @@ namespace LogReader {
 		String^ LoadFilePath;
 		Thread^ ReadLogThread;
 		int readDelayTime; //ms
+		bool threadRun;
 
 	private: System::Windows::Forms::OpenFileDialog^  openFileDialog1;
 	private: System::Windows::Forms::RichTextBox^  richTextBox_LogShow;
@@ -228,12 +229,32 @@ namespace LogReader {
 	private: System::Void button_Clean_Click(System::Object^  sender, System::EventArgs^  e) 
 	{
 		this->richTextBox_LogShow->Clear();
+		IO::FileStream^ fs;
+
+		try
+		{
+			fs = gcnew IO::FileStream(this->LoadFilePath, IO::FileMode::Create, IO::FileAccess::Write);
+		}
+		catch (...)
+		{
+			Windows::Forms::MessageBox::Show("File is opened ,close related procedures.",
+				"Error",
+				MessageBoxButtons::OK,
+				MessageBoxIcon::Error);
+		}
+
+		fs->Close();
 	}
 
-	private: System::Void button_Start_Click(System::Object^  sender, System::EventArgs^  e) 
+	private: System::Void button_Start_Click(System::Object^  sender, System::EventArgs^  e)
 	{
+		if (this->ReadLogThread&&this->ReadLogThread->IsAlive)
+			this->ReadLogThread->Abort();
+
+		threadRun = true;
+
 		this->ReadLogThread = gcnew Thread(gcnew ParameterizedThreadStart(&ReadMessageThread));
-		this->ReadLogThread->IsBackground = true;
+		//this->ReadLogThread->IsBackground = true;
 		this->ReadLogThread->Start(this);
 
 		this->buttonAllow(false, true);
@@ -241,8 +262,12 @@ namespace LogReader {
 
 	private: System::Void button_Stop_Click(System::Object^  sender, System::EventArgs^  e)
 	{
-		if (this->ReadLogThread->IsAlive)
+		threadRun = false;
+
+		if (this->ReadLogThread&&this->ReadLogThread)
 			this->ReadLogThread->Abort();
+
+		Sleep(3000);
 
 		this->buttonAllow(true, false);
 	}
@@ -275,7 +300,7 @@ namespace LogReader {
 	private: System::Void MyForm_Shown(System::Object^  sender, System::EventArgs^  e)
 	{
 		this->textBox_LoadFilePath->Text = this->LoadFilePath;
-		this->textBox_LoadDelayTime->Text = "1";
+		this->textBox_LoadDelayTime->Text = "2";
 		this->buttonAllow(true, false);
 	}
 

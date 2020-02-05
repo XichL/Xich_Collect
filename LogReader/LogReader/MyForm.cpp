@@ -22,7 +22,8 @@ MyForm::MyForm()
 	//
 	//TODO:  在此加入建構函式程式碼
 	LoadFilePath = IO::Path::GetDirectoryName(Application::ExecutablePath) + "\\Log.txt";
-	readDelayTime = 1000;
+	readDelayTime = 2000;
+	threadRun = false;
 	//
 }
 
@@ -34,20 +35,28 @@ MyForm::~MyForm()
 	}
 }
 
+#define	RestartTag tag
 void MyForm::ReadMessageThread(Object ^ Form)
 {
 	MyForm^ myForm = static_cast<MyForm^>(Form);
 
 	myForm->buttonAllow(false, true);
+RestartTag:
 	try
 	{
 		do
 		{
+			if (!myForm->threadRun)
+			{
+				return;
+			}
+
 			String^ strText;
 			// 判定檔案是否存在
 			if (!IO::File::Exists(myForm->LoadFilePath))
 			{
 				strText = "No file exists";
+				Sleep(3000);
 				myForm->buttonAllow(true, false);
 				break;
 			}
@@ -66,10 +75,19 @@ void MyForm::ReadMessageThread(Object ^ Form)
 		String^ strText = "Read exception." +
 			Environment::NewLine +
 			String::Format("{0:0}", e);
-		myForm->SetMessage2Handler(strText);
-		myForm->buttonAllow(true, false);
-	}
 
+		if (!myForm->threadRun)
+		{
+			return;
+		}
+
+		String^ strMsg = "Read exception ,wait prgoram restart self" + Environment::NewLine + "or press \"stop\" and \"start\" again";
+		myForm->SetMessage2Handler(strMsg);
+
+		Sleep(100);
+
+		goto RestartTag;
+	}
 }
 
 void MyForm::SetMessage2Handler(String ^ message)
