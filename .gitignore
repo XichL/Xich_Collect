@@ -1,0 +1,13 @@
+
+*.pdb
+*.metagen
+*.db
+*.ipch
+LogReader/.vs/LogReader/v15/.suo
+*.asm
+*.obj
+*.res
+*.log
+*.pch
+*.tlog
+*.cache

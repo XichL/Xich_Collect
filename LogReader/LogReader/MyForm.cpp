@@ -42,6 +42,9 @@ void MyForm::ReadMessageThread(Object ^ Form)
 
 	myForm->buttonAllow(false, true);
 RestartTag:
+
+	String^ strExceptionMsg = "Read exception ,wait prgoram restart self" + Environment::NewLine + "or press \"stop\" and \"start\" again";
+	String^ lastText = String::Empty; //上一筆資料
 	try
 	{
 		do
@@ -56,6 +59,11 @@ RestartTag:
 			if (!IO::File::Exists(myForm->LoadFilePath))
 			{
 				strText = "No file exists";
+				Windows::Forms::MessageBox::Show("No file exists.",
+					"No file",
+					MessageBoxButtons::OK,
+					MessageBoxIcon::Error);
+				myForm->SetMessage2Handler(strText);
 				Sleep(3000);
 				myForm->buttonAllow(true, false);
 				break;
@@ -63,9 +71,14 @@ RestartTag:
 			else
 			{
 				strText = IO::File::ReadAllText(myForm->LoadFilePath);
+				if (strText->Equals(lastText))
+				{
+					Sleep(myForm->readDelayTime);
+					continue;
+				}
 			}
-			myForm->SetMessage2Handler(strText);
 
+			myForm->SetMessage2Handler(strText);
 			Sleep(myForm->readDelayTime);
 
 		} while (1);
@@ -81,8 +94,7 @@ RestartTag:
 			return;
 		}
 
-		String^ strMsg = "Read exception ,wait prgoram restart self" + Environment::NewLine + "or press \"stop\" and \"start\" again";
-		myForm->SetMessage2Handler(strMsg);
+		myForm->SetMessage2Handler(strExceptionMsg);
 
 		Sleep(100);
 

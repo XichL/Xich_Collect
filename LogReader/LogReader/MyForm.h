@@ -253,11 +253,16 @@ namespace LogReader {
 
 		threadRun = true;
 
-		this->ReadLogThread = gcnew Thread(gcnew ParameterizedThreadStart(&ReadMessageThread));
-		//this->ReadLogThread->IsBackground = true;
-		this->ReadLogThread->Start(this);
+		if (this->ReadLogThread == nullptr || !this->ReadLogThread->IsAlive)
+		{
+			this->richTextBox_LogShow->Clear();
 
-		this->buttonAllow(false, true);
+			this->ReadLogThread = gcnew Thread(gcnew ParameterizedThreadStart(&ReadMessageThread));
+			//this->ReadLogThread->IsBackground = true;
+			this->ReadLogThread->Start(this);
+
+			this->buttonAllow(false, true);
+		}
 	}
 
 	private: System::Void button_Stop_Click(System::Object^  sender, System::EventArgs^  e)
@@ -318,7 +323,7 @@ namespace LogReader {
 
 	private: System::Void MyForm_FormClosing(System::Object^  sender, System::Windows::Forms::FormClosingEventArgs^  e) 
 	{
-		if (this->ReadLogThread->IsAlive)
+		if (this->ReadLogThread&&this->ReadLogThread->IsAlive)
 			this->ReadLogThread->Abort();
 
 		GC::Collect();
