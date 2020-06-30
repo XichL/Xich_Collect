@@ -13,8 +13,8 @@ void Algorithm::Algorithm_Math::setSPLineXData(array<double>^ SPLineXData)
 
 bool Algorithm::Algorithm_Math::calCubicSplineSolution(std::vector<double>& input_x, std::vector<double>& input_y, CubicEquationSolution ^% cubicCoeffs, _SplineFilterMode filterMode)
 {
-	int sizeOfx = input_x.size();
-	int sizeOfy = input_y.size();
+	int sizeOfx = (int)input_x.size();
+	int sizeOfy = (int)input_y.size();
 
 	if (sizeOfx != sizeOfy) { return false; }
 
@@ -123,7 +123,7 @@ void Algorithm::Algorithm_Math::cubicSplineITPL(CubicEquationSolution ^% cubicCo
 
 void Algorithm::Algorithm_Math::cubicSplineITPL2(CubicEquationSolution ^% cubicCoeffs, std::vector<double>& input_x, double & x, double & y)
 {
-	const int count = input_x.size();
+	const int count = (int)input_x.size();
 
 	double low = input_x[0];
 	double high = input_x[count - 1];
@@ -202,7 +202,7 @@ bool Algorithm::Algorithm_Math::calTridiagonalMatric(cv::Mat_<double>& input_a, 
 
 int Algorithm::Algorithm_Math::getITPLIndex(double & pt, std::vector<double>& input_x)
 {
-	const int count = input_x.size() - 1;
+	const int count = (int)input_x.size() - 1;
 	int index = -1;
 	for (int i = 0; i < count; i++)
 	{
@@ -218,7 +218,7 @@ int Algorithm::Algorithm_Math::getITPLIndex(double & pt, std::vector<double>& in
 
 void Algorithm::Algorithm_Math::cubicMedianFilter(std::vector<double>& input, const int filterSize)
 {
-	const int count = input.size();
+	const int count = (int)input.size();
 	for (int i = filterSize / 2; i < count - filterSize / 2; i++)
 	{
 		std::vector<double> temp(filterSize, 0.0);
@@ -259,7 +259,7 @@ void Algorithm::Algorithm_Math::cubicMedianFilter(std::vector<double>& input, co
 
 double Algorithm::Algorithm_Math::cubicSort(std::vector<double>& input)
 {
-	int iCount = input.size();
+	int iCount = (int)input.size();
 	for (int j = 0; j < iCount - 1; j++)
 	{
 		for (int k = iCount - 1; k > j; k--)

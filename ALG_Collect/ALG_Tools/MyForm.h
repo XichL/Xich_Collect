@@ -107,6 +107,6 @@ namespace ALG_Tools {
 	/// <summary>
 	/// ÅªÀÉ°õ¦æºü
 	/// </summary>
-	private: static void ReadMessageThread(Object ^ Form);
+	//private: static void ReadMessageThread(Object ^ Form);
 	};
 }
