@@ -17,13 +17,23 @@ namespace ALG_Collect
 	public ref class ALG
 	{
 	private:
-		Algorithm::Algorithm_Math^ algMath = gcnew Algorithm::Algorithm_Math();
+		ALG();
+		~ALG();
+
+		Algorithm::Algorithm_Math^ algMath;
 		array<double>^ SPLineXData;
+		Algorithm::CubicEquationSolution^ ALG_cubicCoeffs;
+		bool bHaveCubicCoeffs;
 
 	public:
 #pragma region SPLine
 		bool SPLineCalculate(array<double>^ src_x, array<double>^ src_y,
 			array<double>^ input_x,
+			array<double>^%output_x, array<double>^%output_y);
+
+		bool SPLineCalculate_ACC_cubic(array<double>^ src_x, array<double>^ src_y);
+
+		void SPLineCalculate_ACC(array<double>^ input_x,
 			array<double>^%output_x, array<double>^%output_y);
 
 	private:

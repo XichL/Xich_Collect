@@ -1,4 +1,5 @@
 ﻿// dllmain.cpp : 定義 DLL 應用程式的進入點。
+#pragma unmanaged
 #include "stdafx.h"
 
 BOOL APIENTRY DllMain( HMODULE hModule,

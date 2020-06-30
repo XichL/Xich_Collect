@@ -14,3 +14,9 @@ LogReader/.vs/LogReader/v15/.suo
 LogReader/.vs/LogReader/v15/Browse.VC.opendb
 ALG_Collect/.vs/ALG_Collect/v15/.suo
 *.opendb
+ALG_Collect/bin/x64/Debug/ALG_Tools/ALG_Collect.dll
+ALG_Collect/bin/x64/Debug/ALG_Tools/ALG_Tools.exe
+ALG_Collect/obj/x64/Debug/ALG_Tools/ALG_Tools.MyForm.resources
+ALG_Collect/obj/x64/Debug/ALG_Tools/ALG_Tools.vcxproj.CopyComplete
+ALG_Collect/x64/Debug/ALG_Collect.dll
+ALG_Collect/.vs/ALG_Tools/v15/.suo

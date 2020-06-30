@@ -1,6 +1,14 @@
 #include "stdafx.h"
 #include "ALG_Collect.h"
 
+ALG_Collect::ALG::ALG()
+{
+	this->algMath = gcnew Algorithm::Algorithm_Math();
+	this->bHaveCubicCoeffs = false;
+}
+
+ALG_Collect::ALG::~ALG() { ; }
+
 bool ALG_Collect::ALG::SPLineCalculate(array<double>^ src_x, array<double>^ src_y, array<double>^ input_x, array<double>^% output_x, array<double>^% output_y)
 {
 	bool bRes = false;
@@ -9,12 +17,37 @@ bool ALG_Collect::ALG::SPLineCalculate(array<double>^ src_x, array<double>^ src_
 
 	//找出SPLine三次方程式解
 	bRes = CalculateSplineSolution(src_x, src_y, cubicCoeffs, Algorithm::SplineFilterMode::CUBIC_WITHOUT_FILTER);
+	if (bRes)
+	{
+		this->ALG_cubicCoeffs = cubicCoeffs;
+		this->bHaveCubicCoeffs = true;
+	}
 
 	//透過SPLine解算出各需求點對應Y點
 	getCubicSplineITPL(cubicCoeffs, input_x, output_x, output_y);
 
 	//-------------------------------------------------
 	return bRes;
+}
+
+bool ALG_Collect::ALG::SPLineCalculate_ACC_cubic(array<double>^ src_x, array<double>^ src_y)
+{
+	bool bRes = false;
+	//-------------------------------------------------
+	//找出SPLine三次方程式解
+	bRes = CalculateSplineSolution(src_x, src_y, ALG_cubicCoeffs, Algorithm::SplineFilterMode::CUBIC_WITHOUT_FILTER);
+	if (bRes) { this->bHaveCubicCoeffs = true; }
+
+	//-------------------------------------------------
+	return bRes;
+}
+
+void ALG_Collect::ALG::SPLineCalculate_ACC(array<double>^ input_x, array<double>^% output_x, array<double>^% output_y)
+{
+	if (!this->bHaveCubicCoeffs)return;
+
+	//透過SPLine解算出各需求點對應Y點
+	getCubicSplineITPL(ALG_cubicCoeffs, input_x, output_x, output_y);
 }
 
 bool ALG_Collect::ALG::CalculateSplineSolution(array<double>^ input_x, array<double>^ input_y, Algorithm::CubicEquationSolution ^% cubicCoeffs, Algorithm::SplineFilterMode filterMode)
@@ -25,18 +58,18 @@ bool ALG_Collect::ALG::CalculateSplineSolution(array<double>^ input_x, array<dou
 	//array to vector
 	std::vector<double> input_x_v;
 	std::vector<double> input_y_v;
-	SPLineXData = gcnew array<double>(input_x->Length);
+	this->SPLineXData = gcnew array<double>(input_x->Length);
 
 	int idx = 0;
 	for each(double v in input_x)
 	{
 		input_x_v.push_back(v);
-		SPLineXData[idx] = v;
+		this->SPLineXData[idx] = v;
 		idx++;
 	}
 	for each(double v in input_y) { input_y_v.push_back(v); }
 
-	algMath->setSPLineXData(SPLineXData);
+	algMath->setSPLineXData(this->SPLineXData);
 	bRes = algMath->calCubicSplineSolution(input_x_v, input_y_v, cubicCoeffs, (Algorithm::_SplineFilterMode)filterMode);
 
 	//-------------------------------------------------
